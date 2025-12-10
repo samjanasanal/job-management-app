@@ -9,7 +9,7 @@ function Header() {
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
         <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-purple-200 bg-gray-200">
-          <img src="/diverse-user-avatars.png" alt="User avatar" className="w-full h-full object-cover" />
+          <img src="/profile-pic.png" alt="User avatar" className="w-full h-full object-cover" />
         </div>
       </div>
     </header>
