@@ -1,7 +1,7 @@
 "use client"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle, Loader2 } from "lucide-react"
 
-function DeleteModal({ isOpen, onClose, onConfirm }) {
+function DeleteModal({ isOpen, onClose, onConfirm, loading = false }) {
   if (!isOpen) return null
 
   return (
@@ -21,15 +21,24 @@ function DeleteModal({ isOpen, onClose, onConfirm }) {
         <div className="flex gap-4">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-2.5 border-2 border-blue-500 text-blue-500 font-medium rounded-full hover:bg-blue-50 transition-colors"
+            disabled={loading}
+            className="flex-1 px-4 py-2.5 border-2 border-blue-500 text-blue-500 font-medium rounded-full hover:bg-blue-50 transition-colors disabled:opacity-50"
           >
             No, Cancel
           </button>
           <button
             onClick={onConfirm}
-            className="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white font-medium rounded-full transition-colors"
+            disabled={loading}
+            className="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white font-medium rounded-full transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            Yes, Delete
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Deleting...
+              </>
+            ) : (
+              "Yes, Delete"
+            )}
           </button>
         </div>
       </div>

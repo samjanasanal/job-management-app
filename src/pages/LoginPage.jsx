@@ -3,7 +3,6 @@ import LoginForm from "../components/auth/LoginForm"
 function LoginPage() {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden bg-black">
-      {/* Animated GIF Background */}
       <img
         src="/images/8450ab4967f4a0d166aeedfca0d29f836ba4be4c.gif"
         alt="Background animation"

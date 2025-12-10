@@ -1,12 +1,25 @@
 "use client"
 import { NavLink, useNavigate } from "react-router-dom"
 import { LayoutDashboard, Users, Users2, Settings, LogOut, X } from "lucide-react"
+import { authAPI } from "../../services/api"
+import { useToast } from "../../context/ToastContext"
 
 function Sidebar({ isOpen, onClose }) {
   const navigate = useNavigate()
+  const { showToast } = useToast()
 
-  const handleLogout = () => {
-    navigate("/login")
+  const handleLogout = async () => {
+    try {
+      await authAPI.logout()
+      showToast("Logged out successfully", "success")
+    } catch (error) {
+      console.log("Logout API error:", error)
+    } finally {
+      localStorage.removeItem("access_token")
+      localStorage.removeItem("user")
+      localStorage.removeItem("company_id")
+      navigate("/login", { replace: true })
+    }
   }
 
   const menuItems = [
