@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+/* Custom theme configuration in Tailwind v4 */
+@theme {
+  /* Colors */
+  --color-primary: #7c3aed;
+  --color-primary-dark: #6d28d9;
+  --color-sidebar: #1e1b4b;
+  --color-sidebar-hover: #312e81;
+  
+  /* Font families */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  
+  /* Border radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+}
+
+/* Custom utilities */
+@layer utilities {
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
