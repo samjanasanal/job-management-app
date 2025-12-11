@@ -5,32 +5,13 @@ import { Formik, Form, Field } from "formik"
 import { X, User, Camera, Trash2, Loader2 } from "lucide-react"
 import { userValidationSchema } from "../../utils/validationSchemas"
 
-function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibilities = [] }) {
+function EditUserModal({ isOpen, onClose, user, loading = false, onSave, roles = [], responsibilities = [] }) {
   const [imagePreview, setImagePreview] = useState(null)
   const [imageFile, setImageFile] = useState(null)
   const [shouldDeleteImage, setShouldDeleteImage] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isHoveringImage, setIsHoveringImage] = useState(false)
   const fileInputRef = useRef(null)
-
-  const defaultRoles =
-    roles.length > 0
-      ? roles
-      : [
-          { id: "1", title: "Admin" },
-          { id: "2", title: "Supervisor" },
-          { id: "3", title: "Project Manager" },
-        ]
-
-  const defaultResponsibilities =
-    responsibilities.length > 0
-      ? responsibilities
-      : [
-          { id: 1, title: "Designer" },
-          { id: 2, title: "Project Manager" },
-          { id: 3, title: "Production Manager" },
-          { id: 4, title: "Sales Rep" },
-        ]
 
   useEffect(() => {
     if (user) {
@@ -90,12 +71,29 @@ function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibili
     onClose()
   }
 
-  if (!isOpen || !user) return null
+  if (!isOpen) return null
+
+  if (loading || !user) {
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-xl w-full max-w-lg p-8 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+        </div>
+      </div>
+    )
+  }
 
   const getUserResponsibilityIds = () => {
     if (!user.responsibilities) return []
     if (Array.isArray(user.responsibilities)) {
-      return user.responsibilities.map((r) => (typeof r === "object" ? r.id : r))
+      return user.responsibilities
+        .map((r) => {
+          if (typeof r === "object" && r !== null) {
+            return r.id || r.responsibility_id || ""
+          }
+          return r
+        })
+        .filter((id) => id !== "")
     }
     return []
   }
@@ -106,7 +104,7 @@ function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibili
     phone: user.phone || "",
     title: user.title || "",
     initials: user.initials || "",
-    role: user.roleId?.toString() || user.role || "",
+    role: user.roleId?.toString() || "",
     responsibilities: getUserResponsibilityIds(),
   }
 
@@ -146,7 +144,6 @@ function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibili
                           alt="User avatar"
                           className="w-full h-full object-cover"
                         />
-                        {/* Camera overlay on hover */}
                         {isHoveringImage && (
                           <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
                             <Camera className="w-6 h-6 text-white" />
@@ -164,7 +161,6 @@ function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibili
                     onChange={handleImageChange}
                     className="hidden"
                   />
-                  {/* Delete icon - bottom right for edit when image exists */}
                   {imagePreview ? (
                     <button
                       type="button"
@@ -255,7 +251,7 @@ function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibili
                     className={`w-full px-3 py-2.5 border ${errors.role && touched.role ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-purple-500 bg-white`}
                   >
                     <option value="">Select your role</option>
-                    {defaultRoles.map((role) => (
+                    {roles.map((role) => (
                       <option key={role.id} value={role.id}>
                         {role.title}
                       </option>
@@ -271,15 +267,17 @@ function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibili
                   Designation<span className="text-red-500">*</span>
                 </label>
                 <div className="flex flex-wrap gap-4">
-                  {defaultResponsibilities.map((resp) => (
+                  {responsibilities.map((resp) => (
                     <label key={resp.id} className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
-                        checked={values.responsibilities.includes(resp.id)}
+                        checked={values.responsibilities.some((id) => String(id) === String(resp.id))}
                         onChange={() => {
-                          const newResponsibilities = values.responsibilities.includes(resp.id)
-                            ? values.responsibilities.filter((id) => id !== resp.id)
-                            : [...values.responsibilities, resp.id]
+                          const respId = resp.id
+                          const isSelected = values.responsibilities.some((id) => String(id) === String(respId))
+                          const newResponsibilities = isSelected
+                            ? values.responsibilities.filter((id) => String(id) !== String(respId))
+                            : [...values.responsibilities, respId]
                           setFieldValue("responsibilities", newResponsibilities)
                         }}
                         className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"

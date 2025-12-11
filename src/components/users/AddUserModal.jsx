@@ -21,25 +21,6 @@ function AddUserModal({ isOpen, onClose, onAdd, roles = [], responsibilities = [
     responsibilities: [],
   }
 
-  const defaultRoles =
-    roles.length > 0
-      ? roles
-      : [
-          { id: "1", title: "Admin" },
-          { id: "2", title: "Supervisor" },
-          { id: "3", title: "Project Manager" },
-        ]
-
-  const defaultResponsibilities =
-    responsibilities.length > 0
-      ? responsibilities
-      : [
-          { id: 1, title: "Designer" },
-          { id: 2, title: "Project Manager" },
-          { id: 3, title: "Production Manager" },
-          { id: 4, title: "Sales Rep" },
-        ]
-
   const handleImageChange = (e) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -115,7 +96,6 @@ function AddUserModal({ isOpen, onClose, onAdd, roles = [], responsibilities = [
                       <User className="w-10 h-10 text-purple-400" />
                     )}
                   </div>
-                  {/* Camera icon - bottom right for add */}
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -215,7 +195,7 @@ function AddUserModal({ isOpen, onClose, onAdd, roles = [], responsibilities = [
                     className={`w-full px-3 py-2.5 border ${errors.role && touched.role ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-purple-500 bg-white`}
                   >
                     <option value="">Select your role</option>
-                    {defaultRoles.map((role) => (
+                    {roles.map((role) => (
                       <option key={role.id} value={role.id}>
                         {role.title}
                       </option>
@@ -231,7 +211,7 @@ function AddUserModal({ isOpen, onClose, onAdd, roles = [], responsibilities = [
                   Designation<span className="text-red-500">*</span>
                 </label>
                 <div className="flex flex-wrap gap-4">
-                  {defaultResponsibilities.map((resp) => (
+                  {responsibilities.map((resp) => (
                     <label key={resp.id} className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
