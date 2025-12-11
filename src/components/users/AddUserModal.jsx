@@ -21,25 +21,6 @@ function AddUserModal({ isOpen, onClose, onAdd, roles = [], responsibilities = [
     responsibilities: [],
   }
 
-  const defaultRoles =
-    roles.length > 0
-      ? roles
-      : [
-          { id: "1", title: "Admin" },
-          { id: "2", title: "Supervisor" },
-          { id: "3", title: "Project Manager" },
-        ]
-
-  const defaultResponsibilities =
-    responsibilities.length > 0
-      ? responsibilities
-      : [
-          { id: 1, title: "Designer" },
-          { id: 2, title: "Project Manager" },
-          { id: 3, title: "Production Manager" },
-          { id: 4, title: "Sales Rep" },
-        ]
-
   const handleImageChange = (e) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -88,12 +69,12 @@ function AddUserModal({ isOpen, onClose, onAdd, roles = [], responsibilities = [
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-800">Add New User</h2>
+          <h2 className="text-lg font-semibold text-[#555555]">Add New User</h2>
           <button onClick={handleClose} className="p-1 hover:bg-gray-100 rounded-lg transition-colors">
-            <X className="w-5 h-5 text-gray-500" />
+            <X className="w-5 h-5 text-[#555555]" />
           </button>
         </div>
 
@@ -104,7 +85,7 @@ function AddUserModal({ isOpen, onClose, onAdd, roles = [], responsibilities = [
               {/* Avatar with Camera Icon */}
               <div className="flex justify-center mb-6">
                 <div className="relative">
-                  <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center border-2 border-purple-200 overflow-hidden">
+                  <div className="w-20 h-20 bg-[#8570FF]/10 rounded-full flex items-center justify-center border-2 border-[#8570FF]/30 overflow-hidden">
                     {imagePreview ? (
                       <img
                         src={imagePreview || "/placeholder.svg"}
@@ -112,10 +93,9 @@ function AddUserModal({ isOpen, onClose, onAdd, roles = [], responsibilities = [
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <User className="w-10 h-10 text-purple-400" />
+                      <User className="w-10 h-10 text-[#8570FF]" />
                     )}
                   </div>
-                  {/* Camera icon - bottom right for add */}
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -135,7 +115,7 @@ function AddUserModal({ isOpen, onClose, onAdd, roles = [], responsibilities = [
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="absolute -bottom-1 -right-1 w-7 h-7 bg-purple-600 rounded-full flex items-center justify-center text-white hover:bg-purple-700 transition-colors shadow-md"
+                      className="absolute -bottom-1 -right-1 w-7 h-7 bg-[#8570FF] rounded-full flex items-center justify-center text-white hover:bg-[#8570FF]/90 transition-colors shadow-md"
                     >
                       <Camera className="w-3.5 h-3.5" />
                     </button>
@@ -146,92 +126,92 @@ function AddUserModal({ isOpen, onClose, onAdd, roles = [], responsibilities = [
               {/* Form Fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-[13px] font-medium text-[#555555] mb-1.5">
                     Name<span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="text"
                     name="name"
                     placeholder="Enter your name"
-                    className={`w-full px-3 py-2.5 border ${errors.name && touched.name ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-purple-500`}
+                    className={`w-full px-3 py-2 text-[14px] border ${errors.name && touched.name ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-[#8570FF] text-[#555555]`}
                   />
-                  {errors.name && touched.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                  {errors.name && touched.name && <p className="text-red-500 text-[11px] mt-1">{errors.name}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-[13px] font-medium text-[#555555] mb-1.5">
                     Email<span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="email"
                     name="email"
                     placeholder="Enter your email"
-                    className={`w-full px-3 py-2.5 border ${errors.email && touched.email ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-purple-500`}
+                    className={`w-full px-3 py-2 text-[14px] border ${errors.email && touched.email ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-[#8570FF] text-[#555555]`}
                   />
-                  {errors.email && touched.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                  {errors.email && touched.email && <p className="text-red-500 text-[11px] mt-1">{errors.email}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                  <label className="block text-[13px] font-medium text-[#555555] mb-1.5">Phone Number</label>
                   <Field
                     type="tel"
                     name="phone"
                     placeholder="Enter your phone number"
-                    className={`w-full px-3 py-2.5 border ${errors.phone && touched.phone ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-purple-500`}
+                    className={`w-full px-3 py-2 text-[14px] border ${errors.phone && touched.phone ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-[#8570FF] text-[#555555]`}
                   />
-                  {errors.phone && touched.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+                  {errors.phone && touched.phone && <p className="text-red-500 text-[11px] mt-1">{errors.phone}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                  <label className="block text-[13px] font-medium text-[#555555] mb-1.5">Title</label>
                   <Field
                     type="text"
                     name="title"
                     placeholder="Enter your title"
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:border-[#8570FF] text-[#555555]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Initials</label>
+                  <label className="block text-[13px] font-medium text-[#555555] mb-1.5">Initials</label>
                   <Field
                     type="text"
                     name="initials"
                     placeholder="Enter your initials"
-                    className={`w-full px-3 py-2.5 border ${errors.initials && touched.initials ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-purple-500`}
+                    className={`w-full px-3 py-2 text-[14px] border ${errors.initials && touched.initials ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-[#8570FF] text-[#555555]`}
                   />
                   {errors.initials && touched.initials && (
-                    <p className="text-red-500 text-xs mt-1">{errors.initials}</p>
+                    <p className="text-red-500 text-[11px] mt-1">{errors.initials}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-[13px] font-medium text-[#555555] mb-1.5">
                     Role<span className="text-red-500">*</span>
                   </label>
                   <Field
                     as="select"
                     name="role"
-                    className={`w-full px-3 py-2.5 border ${errors.role && touched.role ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-purple-500 bg-white`}
+                    className={`w-full px-3 py-2 text-[14px] border ${errors.role && touched.role ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-[#8570FF] bg-white text-[#555555]`}
                   >
                     <option value="">Select your role</option>
-                    {defaultRoles.map((role) => (
+                    {roles.map((role) => (
                       <option key={role.id} value={role.id}>
                         {role.title}
                       </option>
                     ))}
                   </Field>
-                  {errors.role && touched.role && <p className="text-red-500 text-xs mt-1">{errors.role}</p>}
+                  {errors.role && touched.role && <p className="text-red-500 text-[11px] mt-1">{errors.role}</p>}
                 </div>
               </div>
 
               {/* Designation / Responsibilities */}
               <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700 mb-3">
+                <label className="block text-[13px] font-medium text-[#555555] mb-3">
                   Designation<span className="text-red-500">*</span>
                 </label>
                 <div className="flex flex-wrap gap-4">
-                  {defaultResponsibilities.map((resp) => (
+                  {responsibilities.map((resp) => (
                     <label key={resp.id} className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
@@ -242,14 +222,14 @@ function AddUserModal({ isOpen, onClose, onAdd, roles = [], responsibilities = [
                             : [...values.responsibilities, resp.id]
                           setFieldValue("responsibilities", newResponsibilities)
                         }}
-                        className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                        className="modal-checkbox"
                       />
-                      <span className="text-sm text-gray-600">{resp.title}</span>
+                      <span className="text-[13px] text-[#555555]">{resp.title}</span>
                     </label>
                   ))}
                 </div>
                 {errors.responsibilities && touched.responsibilities && (
-                  <p className="text-red-500 text-xs mt-1">{errors.responsibilities}</p>
+                  <p className="text-red-500 text-[11px] mt-1">{errors.responsibilities}</p>
                 )}
               </div>
 
@@ -257,7 +237,7 @@ function AddUserModal({ isOpen, onClose, onAdd, roles = [], responsibilities = [
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full mt-6 bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full mt-6 bg-[#8570FF] hover:bg-[#8570FF]/90 text-white font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-[14px]"
               >
                 {isSubmitting ? (
                   <>

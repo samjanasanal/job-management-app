@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route, Navigate, BrowserRouter } from "react-router-dom"
+import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom"
 import { ToastProvider } from "./context/ToastContext"
 import LoginPage from "./pages/LoginPage"
 import DashboardLayout from "./components/layout/DashboardLayout"

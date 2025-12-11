@@ -17,19 +17,19 @@ function UserTable({ users, startIndex, onStatusToggle, onEdit, onDelete }) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[900px]">
-        <thead className="bg-gray-50 border-b border-gray-100">
+        <thead style={{ backgroundColor: "#504A6E" }}>
           <tr>
             {columns.map((col) => (
               <th
                 key={col.key}
-                className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                className="px-4 py-3 text-left text-[11px] font-semibold text-white uppercase tracking-wide"
               >
                 <div className="flex items-center gap-1">
                   {col.label}
                   {col.sortable && (
                     <div className="flex flex-col">
-                      <ChevronUp className="w-3 h-3 -mb-1 text-gray-400" />
-                      <ChevronDown className="w-3 h-3 text-gray-400" />
+                      <ChevronUp className="w-3 h-3 -mb-1 text-white/60" />
+                      <ChevronDown className="w-3 h-3 text-white/60" />
                     </div>
                   )}
                 </div>
@@ -40,17 +40,17 @@ function UserTable({ users, startIndex, onStatusToggle, onEdit, onDelete }) {
         <tbody className="divide-y divide-gray-100">
           {users.map((user, index) => (
             <tr key={user.id} className="hover:bg-gray-50 transition-colors">
-              <td className="px-4 py-3 text-sm text-gray-600">{startIndex + index}</td>
-              <td className="px-4 py-3 text-sm font-medium text-gray-800">{user.name}</td>
-              <td className="px-4 py-3 text-sm text-gray-600">{user.email}</td>
-              <td className="px-4 py-3 text-sm text-gray-600">{user.initials}</td>
-              <td className="px-4 py-3 text-sm text-gray-600">{user.phone}</td>
-              <td className="px-4 py-3 text-sm text-gray-600">{user.role}</td>
+              <td className="px-4 py-3 text-[13px] text-[#555555]">{startIndex + index}</td>
+              <td className="px-4 py-3 text-[13px] font-medium text-[#555555]">{user.name}</td>
+              <td className="px-4 py-3 text-[13px] text-[#555555]">{user.email}</td>
+              <td className="px-4 py-3 text-[13px] text-[#555555]">{user.initials}</td>
+              <td className="px-4 py-3 text-[13px] text-[#555555]">{user.phone}</td>
+              <td className="px-4 py-3 text-[13px] text-[#555555]">{user.role}</td>
               <td className="px-4 py-3">
                 <button
                   onClick={() => onStatusToggle(user.id)}
-                  className={`relative w-12 h-6 rounded-full transition-colors ${
-                    user.status ? "bg-purple-600" : "bg-gray-300"
+                  className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 ${
+                    user.status ? "bg-[#8570FF]" : "bg-gray-300"
                   }`}
                 >
                   <span
@@ -60,18 +60,20 @@ function UserTable({ users, startIndex, onStatusToggle, onEdit, onDelete }) {
                   />
                 </button>
               </td>
-              <td className="px-4 py-3 text-sm text-gray-600">{user.title}</td>
+              <td className="px-4 py-3 text-[13px] text-[#555555]">{user.title}</td>
               <td className="px-4 py-3">
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => onEdit(user)}
-                    className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                    className="p-1.5 text-[#8570FF] hover:bg-[#8570FF]/10 rounded-lg transition-colors"
+                    aria-label="Edit user"
                   >
                     <Pencil className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => onDelete(user)}
-                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    aria-label="Delete user"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

@@ -5,32 +5,13 @@ import { Formik, Form, Field } from "formik"
 import { X, User, Camera, Trash2, Loader2 } from "lucide-react"
 import { userValidationSchema } from "../../utils/validationSchemas"
 
-function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibilities = [] }) {
+function EditUserModal({ isOpen, onClose, user, loading = false, onSave, roles = [], responsibilities = [] }) {
   const [imagePreview, setImagePreview] = useState(null)
   const [imageFile, setImageFile] = useState(null)
   const [shouldDeleteImage, setShouldDeleteImage] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isHoveringImage, setIsHoveringImage] = useState(false)
   const fileInputRef = useRef(null)
-
-  const defaultRoles =
-    roles.length > 0
-      ? roles
-      : [
-          { id: "1", title: "Admin" },
-          { id: "2", title: "Supervisor" },
-          { id: "3", title: "Project Manager" },
-        ]
-
-  const defaultResponsibilities =
-    responsibilities.length > 0
-      ? responsibilities
-      : [
-          { id: 1, title: "Designer" },
-          { id: 2, title: "Project Manager" },
-          { id: 3, title: "Production Manager" },
-          { id: 4, title: "Sales Rep" },
-        ]
 
   useEffect(() => {
     if (user) {
@@ -75,7 +56,6 @@ function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibili
       }
       await onSave(userData)
     } catch (error) {
-      // Error handled by parent
     } finally {
       setIsSubmitting(false)
       setSubmitting(false)
@@ -90,12 +70,29 @@ function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibili
     onClose()
   }
 
-  if (!isOpen || !user) return null
+  if (!isOpen) return null
+
+  if (loading || !user) {
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-xl w-full max-w-lg p-8 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-[#8570FF]" />
+        </div>
+      </div>
+    )
+  }
 
   const getUserResponsibilityIds = () => {
     if (!user.responsibilities) return []
     if (Array.isArray(user.responsibilities)) {
-      return user.responsibilities.map((r) => (typeof r === "object" ? r.id : r))
+      return user.responsibilities
+        .map((r) => {
+          if (typeof r === "object" && r !== null) {
+            return r.id || r.responsibility_id || ""
+          }
+          return r
+        })
+        .filter((id) => id !== "")
     }
     return []
   }
@@ -106,18 +103,18 @@ function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibili
     phone: user.phone || "",
     title: user.title || "",
     initials: user.initials || "",
-    role: user.roleId?.toString() || user.role || "",
+    role: user.roleId?.toString() || "",
     responsibilities: getUserResponsibilityIds(),
   }
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-800">Edit User</h2>
+          <h2 className="text-lg font-semibold text-[#555555]">Edit User</h2>
           <button onClick={handleClose} className="p-1 hover:bg-gray-100 rounded-lg transition-colors">
-            <X className="w-5 h-5 text-gray-500" />
+            <X className="w-5 h-5 text-[#555555]" />
           </button>
         </div>
 
@@ -134,7 +131,7 @@ function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibili
               <div className="flex justify-center mb-6">
                 <div className="relative">
                   <div
-                    className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center border-2 border-purple-200 overflow-hidden cursor-pointer"
+                    className="w-20 h-20 bg-[#8570FF]/10 rounded-full flex items-center justify-center border-2 border-[#8570FF]/30 overflow-hidden cursor-pointer"
                     onMouseEnter={() => setIsHoveringImage(true)}
                     onMouseLeave={() => setIsHoveringImage(false)}
                     onClick={() => fileInputRef.current?.click()}
@@ -146,7 +143,6 @@ function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibili
                           alt="User avatar"
                           className="w-full h-full object-cover"
                         />
-                        {/* Camera overlay on hover */}
                         {isHoveringImage && (
                           <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
                             <Camera className="w-6 h-6 text-white" />
@@ -154,7 +150,7 @@ function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibili
                         )}
                       </>
                     ) : (
-                      <User className="w-10 h-10 text-purple-400" />
+                      <User className="w-10 h-10 text-[#8570FF]" />
                     )}
                   </div>
                   <input
@@ -164,7 +160,6 @@ function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibili
                     onChange={handleImageChange}
                     className="hidden"
                   />
-                  {/* Delete icon - bottom right for edit when image exists */}
                   {imagePreview ? (
                     <button
                       type="button"
@@ -180,7 +175,7 @@ function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibili
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="absolute -bottom-1 -right-1 w-7 h-7 bg-purple-600 rounded-full flex items-center justify-center text-white hover:bg-purple-700 transition-colors shadow-md"
+                      className="absolute -bottom-1 -right-1 w-7 h-7 bg-[#8570FF] rounded-full flex items-center justify-center text-white hover:bg-[#8570FF]/90 transition-colors shadow-md"
                     >
                       <Camera className="w-3.5 h-3.5" />
                     </button>
@@ -191,105 +186,107 @@ function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibili
               {/* Form Fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-[13px] font-medium text-[#555555] mb-1.5">
                     Name<span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="text"
                     name="name"
-                    className={`w-full px-3 py-2.5 border ${errors.name && touched.name ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-purple-500`}
+                    className={`w-full px-3 py-2 text-[14px] border ${errors.name && touched.name ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-[#8570FF] text-[#555555]`}
                   />
-                  {errors.name && touched.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                  {errors.name && touched.name && <p className="text-red-500 text-[11px] mt-1">{errors.name}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-[13px] font-medium text-[#555555] mb-1.5">
                     Email<span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="email"
                     name="email"
-                    className={`w-full px-3 py-2.5 border ${errors.email && touched.email ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-purple-500`}
+                    className={`w-full px-3 py-2 text-[14px] border ${errors.email && touched.email ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-[#8570FF] text-[#555555]`}
                   />
-                  {errors.email && touched.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                  {errors.email && touched.email && <p className="text-red-500 text-[11px] mt-1">{errors.email}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                  <label className="block text-[13px] font-medium text-[#555555] mb-1.5">Phone Number</label>
                   <Field
                     type="tel"
                     name="phone"
-                    className={`w-full px-3 py-2.5 border ${errors.phone && touched.phone ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-purple-500`}
+                    className={`w-full px-3 py-2 text-[14px] border ${errors.phone && touched.phone ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-[#8570FF] text-[#555555]`}
                   />
-                  {errors.phone && touched.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+                  {errors.phone && touched.phone && <p className="text-red-500 text-[11px] mt-1">{errors.phone}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                  <label className="block text-[13px] font-medium text-[#555555] mb-1.5">Title</label>
                   <Field
                     type="text"
                     name="title"
-                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:border-[#8570FF] text-[#555555]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Initials</label>
+                  <label className="block text-[13px] font-medium text-[#555555] mb-1.5">Initials</label>
                   <Field
                     type="text"
                     name="initials"
-                    className={`w-full px-3 py-2.5 border ${errors.initials && touched.initials ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-purple-500`}
+                    className={`w-full px-3 py-2 text-[14px] border ${errors.initials && touched.initials ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-[#8570FF] text-[#555555]`}
                   />
                   {errors.initials && touched.initials && (
-                    <p className="text-red-500 text-xs mt-1">{errors.initials}</p>
+                    <p className="text-red-500 text-[11px] mt-1">{errors.initials}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-[13px] font-medium text-[#555555] mb-1.5">
                     Role<span className="text-red-500">*</span>
                   </label>
                   <Field
                     as="select"
                     name="role"
-                    className={`w-full px-3 py-2.5 border ${errors.role && touched.role ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-purple-500 bg-white`}
+                    className={`w-full px-3 py-2 text-[14px] border ${errors.role && touched.role ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-[#8570FF] bg-white text-[#555555]`}
                   >
                     <option value="">Select your role</option>
-                    {defaultRoles.map((role) => (
+                    {roles.map((role) => (
                       <option key={role.id} value={role.id}>
                         {role.title}
                       </option>
                     ))}
                   </Field>
-                  {errors.role && touched.role && <p className="text-red-500 text-xs mt-1">{errors.role}</p>}
+                  {errors.role && touched.role && <p className="text-red-500 text-[11px] mt-1">{errors.role}</p>}
                 </div>
               </div>
 
               {/* Designation / Responsibilities */}
               <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700 mb-3">
+                <label className="block text-[13px] font-medium text-[#555555] mb-3">
                   Designation<span className="text-red-500">*</span>
                 </label>
                 <div className="flex flex-wrap gap-4">
-                  {defaultResponsibilities.map((resp) => (
+                  {responsibilities.map((resp) => (
                     <label key={resp.id} className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
-                        checked={values.responsibilities.includes(resp.id)}
+                        checked={values.responsibilities.some((id) => String(id) === String(resp.id))}
                         onChange={() => {
-                          const newResponsibilities = values.responsibilities.includes(resp.id)
-                            ? values.responsibilities.filter((id) => id !== resp.id)
-                            : [...values.responsibilities, resp.id]
+                          const respId = resp.id
+                          const isSelected = values.responsibilities.some((id) => String(id) === String(respId))
+                          const newResponsibilities = isSelected
+                            ? values.responsibilities.filter((id) => String(id) !== String(respId))
+                            : [...values.responsibilities, respId]
                           setFieldValue("responsibilities", newResponsibilities)
                         }}
-                        className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                        className="modal-checkbox"
                       />
-                      <span className="text-sm text-gray-600">{resp.title}</span>
+                      <span className="text-[13px] text-[#555555]">{resp.title}</span>
                     </label>
                   ))}
                 </div>
                 {errors.responsibilities && touched.responsibilities && (
-                  <p className="text-red-500 text-xs mt-1">{errors.responsibilities}</p>
+                  <p className="text-red-500 text-[11px] mt-1">{errors.responsibilities}</p>
                 )}
               </div>
 
@@ -297,7 +294,7 @@ function EditUserModal({ isOpen, onClose, user, onSave, roles = [], responsibili
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full mt-6 bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full mt-6 bg-[#8570FF] hover:bg-[#8570FF]/90 text-white font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-[14px]"
               >
                 {isSubmitting ? (
                   <>

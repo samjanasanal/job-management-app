@@ -1,6 +1,5 @@
 const API_BASE_URL = "http://13.210.33.250/api"
 
-// Helper to get auth token from localStorage
 const getAuthToken = () => localStorage.getItem("access_token")
 
 const getCompanyId = () => {
@@ -11,7 +10,6 @@ const getCompanyId = () => {
   return companyId || ""
 }
 
-// Helper to create headers with proper company_id
 const createHeaders = (includeAuth = true, isFormData = false) => {
   const headers = {
     Accept: "application/json",

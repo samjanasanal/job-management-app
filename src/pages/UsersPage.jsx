@@ -22,6 +22,8 @@ function UsersPage() {
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
+  const [selectedUserId, setSelectedUserId] = useState(null)
+  const [editUserLoading, setEditUserLoading] = useState(false)
   const [actionLoading, setActionLoading] = useState(false)
 
   const itemsPerPage = 10
@@ -33,7 +35,6 @@ function UsersPage() {
       const statusParam = statusFilter === "active" ? 1 : statusFilter === "inactive" ? 0 : null
       const response = await userAPI.getUsers(statusParam)
       if (response.status && response.data) {
-        // Transform API response to match our component structure
         const transformedUsers = response.data.map((user) => ({
           id: user.id,
           name: user.first_name + (user.last_name ? ` ${user.last_name}` : ""),
@@ -51,14 +52,11 @@ function UsersPage() {
       }
     } catch (error) {
       showToast(error.message || "Failed to fetch users", "error")
-      // Use mock data if API fails
-      setUsers(getMockUsers())
     } finally {
       setLoading(false)
     }
   }, [statusFilter, showToast])
 
-  // Fetch roles and responsibilities
   const fetchDropdownData = useCallback(async () => {
     try {
       const [rolesResponse, responsibilitiesResponse] = await Promise.all([
@@ -67,31 +65,41 @@ function UsersPage() {
       ])
 
       if (rolesResponse.status && rolesResponse.data) {
+        const rolesData = rolesResponse.data
         const allRoles = []
-        if (rolesResponse.data.owner) allRoles.push({ id: rolesResponse.data.owner, title: "Owner" })
-        if (rolesResponse.data.admin) allRoles.push({ id: rolesResponse.data.admin, title: "Admin" })
-        if (rolesResponse.data.other_roles) {
-          allRoles.push(...rolesResponse.data.other_roles)
+
+        Object.entries(rolesData).forEach(([title, id]) => {
+          if (typeof id === "string") {
+            allRoles.push({ id, title })
+          }
+        })
+
+        if (rolesData.other_roles && Array.isArray(rolesData.other_roles)) {
+          allRoles.push(...rolesData.other_roles)
         }
+
         setRoles(allRoles)
       }
 
-      if (Array.isArray(responsibilitiesResponse)) {
+      if (responsibilitiesResponse.status && responsibilitiesResponse.data) {
+        const respData = responsibilitiesResponse.data
+
+        if (typeof respData === "object" && !Array.isArray(respData)) {
+          const respArray = Object.entries(respData).map(([title, id]) => ({
+            id,
+            title,
+          }))
+          setResponsibilities(respArray)
+        } else if (Array.isArray(respData)) {
+          setResponsibilities(respData)
+        }
+      } else if (Array.isArray(responsibilitiesResponse)) {
         setResponsibilities(responsibilitiesResponse)
       }
     } catch (error) {
-      // Use default values if API fails
-      setRoles([
-        { id: 1, title: "Admin" },
-        { id: 2, title: "Supervisor" },
-        { id: 3, title: "Project Manager" },
-      ])
-      setResponsibilities([
-        { id: 1, title: "Designer" },
-        { id: 2, title: "Project Manager" },
-        { id: 3, title: "Production Manager" },
-        { id: 4, title: "Sales Rep" },
-      ])
+      console.log("Failed to fetch dropdown data:", error)
+      setRoles([])
+      setResponsibilities([])
     }
   }, [])
 
@@ -99,142 +107,6 @@ function UsersPage() {
     fetchUsers()
     fetchDropdownData()
   }, [fetchUsers, fetchDropdownData])
-
-  // Mock users for fallback
-  const getMockUsers = () => [
-    {
-      id: 1,
-      name: "Travis Scott",
-      email: "alma.lawson@example.com",
-      initials: "B",
-      phone: "0412 345 678",
-      role: "Admin",
-      status: true,
-      title: "Admin",
-      responsibilities: [1, 2],
-    },
-    {
-      id: 2,
-      name: "Jane Cooper",
-      email: "willie.jennings@example.com",
-      initials: "L",
-      phone: "0412 345 678",
-      role: "Supervisor",
-      status: true,
-      title: "Supervisor",
-      responsibilities: [2, 3],
-    },
-    {
-      id: 3,
-      name: "Ronald Richards",
-      email: "jackson.graham@example.com",
-      initials: "R",
-      phone: "0412 345 678",
-      role: "Project Manager",
-      status: false,
-      title: "Supervisor",
-      responsibilities: [3],
-    },
-    {
-      id: 4,
-      name: "Darlene Robertson",
-      email: "nathan.roberts@example.com",
-      initials: "P",
-      phone: "0412 345 678",
-      role: "Project Manager",
-      status: false,
-      title: "Project Manager",
-      responsibilities: [1, 4],
-    },
-    {
-      id: 5,
-      name: "Courtney Henry",
-      email: "curtis.weaver@example.com",
-      initials: "C",
-      phone: "0412 345 678",
-      role: "Project Manager",
-      status: false,
-      title: "Project Manager",
-      responsibilities: [2],
-    },
-    {
-      id: 6,
-      name: "Wade Warren",
-      email: "kenzi.lawson@example.com",
-      initials: "B",
-      phone: "0412 345 678",
-      role: "Supervisor",
-      status: true,
-      title: "Project Manager",
-      responsibilities: [3, 4],
-    },
-    {
-      id: 7,
-      name: "Brooklyn Simmons",
-      email: "felicia.reid@example.com",
-      initials: "S",
-      phone: "0412 345 678",
-      role: "Supervisor",
-      status: true,
-      title: "Project Manager",
-      responsibilities: [1],
-    },
-    {
-      id: 8,
-      name: "Brooklyn Simmons",
-      email: "felicia.reid@example.com",
-      initials: "T",
-      phone: "0412 345 678",
-      role: "Project Manager",
-      status: true,
-      title: "Project Manager",
-      responsibilities: [2, 3],
-    },
-    {
-      id: 9,
-      name: "Jenny Wilson",
-      email: "nevaeh.simmons@example.com",
-      initials: "M",
-      phone: "0412 345 678",
-      role: "Supervisor",
-      status: true,
-      title: "Project Manager",
-      responsibilities: [4],
-    },
-    {
-      id: 10,
-      name: "Robert Fox",
-      email: "sara.cruz@example.com",
-      initials: "P",
-      phone: "0412 345 678",
-      role: "Project Manager",
-      status: true,
-      title: "Project Manager",
-      responsibilities: [1, 2, 3],
-    },
-    {
-      id: 11,
-      name: "Leslie Alexander",
-      email: "leslie.alex@example.com",
-      initials: "L",
-      phone: "0412 345 678",
-      role: "Admin",
-      status: true,
-      title: "Admin",
-      responsibilities: [2],
-    },
-    {
-      id: 12,
-      name: "Michael Foster",
-      email: "michael.foster@example.com",
-      initials: "M",
-      phone: "0412 345 678",
-      role: "Supervisor",
-      status: false,
-      title: "Supervisor",
-      responsibilities: [1, 3],
-    },
-  ]
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
@@ -248,27 +120,52 @@ function UsersPage() {
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage)
   const paginatedUsers = filteredUsers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
-  // Handle status toggle with API
   const handleStatusToggle = async (userId) => {
     const user = users.find((u) => u.id === userId)
     if (!user) return
 
-    // Optimistically update UI
     setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, status: !u.status } : u)))
 
     try {
       await userAPI.changeStatus(userId, !user.status)
       showToast("Status changed successfully", "success")
     } catch (error) {
-      // Revert on error
       setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, status: user.status } : u)))
       showToast(error.message || "Failed to change status", "error")
     }
   }
 
-  const handleEdit = (user) => {
-    setSelectedUser(user)
+  const handleEdit = async (user) => {
+    setSelectedUserId(user.id)
     setEditModalOpen(true)
+    setEditUserLoading(true)
+
+    try {
+      const response = await userAPI.getUser(user.id)
+      if (response.status && response.data) {
+        const userData = response.data
+        setSelectedUser({
+          id: userData.id,
+          name: userData.first_name + (userData.last_name ? ` ${userData.last_name}` : ""),
+          firstName: userData.first_name,
+          lastName: userData.last_name,
+          email: userData.email,
+          initials: userData.initials || "",
+          phone: userData.phone || "",
+          role: userData.role?.title || "",
+          roleId: userData.role?.id || "",
+          status: userData.status,
+          title: userData.title || "",
+          profileImage: userData.profile_image_url,
+          responsibilities: userData.responsibilities || [],
+        })
+      }
+    } catch (error) {
+      showToast(error.message || "Failed to fetch user details", "error")
+      setEditModalOpen(false)
+    } finally {
+      setEditUserLoading(false)
+    }
   }
 
   const handleDelete = (user) => {
@@ -276,7 +173,6 @@ function UsersPage() {
     setDeleteModalOpen(true)
   }
 
-  // Handle delete with API
   const handleConfirmDelete = async () => {
     if (!selectedUser) return
 
@@ -294,17 +190,16 @@ function UsersPage() {
     }
   }
 
-  // Handle add user with API
   const handleAddUser = async (newUser) => {
     setActionLoading(true)
     try {
       await userAPI.addUser(newUser)
       showToast("User added successfully", "success")
       setAddModalOpen(false)
-      fetchUsers() // Refresh the list
+      fetchUsers()
     } catch (error) {
       showToast(error.message || "Failed to add user", "error")
-      throw error // Re-throw to let modal handle it
+      throw error
     } finally {
       setActionLoading(false)
     }
@@ -324,7 +219,7 @@ function UsersPage() {
       showToast("User updated successfully", "success")
       setEditModalOpen(false)
       setSelectedUser(null)
-      fetchUsers() // Refresh the list
+      fetchUsers()
     } catch (error) {
       showToast(error.message || "Failed to update user", "error")
       throw error
@@ -339,19 +234,16 @@ function UsersPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#8570FF]" />
       </div>
     )
   }
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Jobs Management</h1>
-
       {/* Filters and Add Button */}
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="flex flex-col sm:flex-row gap-4 flex-1">
-          {/* Search */}
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
@@ -362,18 +254,17 @@ function UsersPage() {
                 setSearchQuery(e.target.value)
                 setCurrentPage(1)
               }}
-              className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 bg-white"
+              className="w-full pl-10 pr-4 py-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:border-[#8570FF] bg-white text-[#555555]"
             />
           </div>
 
-          {/* Status Filter */}
           <select
             value={statusFilter}
             onChange={(e) => {
               setStatusFilter(e.target.value)
               setCurrentPage(1)
             }}
-            className="px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 bg-white min-w-[150px]"
+            className="px-4 py-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:border-[#8570FF] bg-white min-w-[150px] text-[#555555]"
           >
             <option value="">Select Status</option>
             <option value="active">Active</option>
@@ -381,12 +272,11 @@ function UsersPage() {
           </select>
         </div>
 
-        {/* Add Button */}
         <button
           onClick={() => setAddModalOpen(true)}
-          className="flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap"
+          className="flex items-center text-[14px] font-medium justify-center gap-2 bg-[#8570FF] hover:bg-[#8570FF]/90 text-white px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="w-5 h-5 flex-shrink-0" />
           <span>Add New User</span>
         </button>
       </div>
@@ -403,7 +293,7 @@ function UsersPage() {
 
         {/* Pagination */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-gray-100">
-          <p className="text-sm text-gray-500">
+          <p className="text-[13px] text-[#555555]">
             showing {filteredUsers.length > 0 ? startIndex : 0} to {endIndex} of {filteredUsers.length} results
           </p>
 
@@ -413,15 +303,17 @@ function UsersPage() {
               disabled={currentPage === 1}
               className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-4 h-4 text-[#555555]" />
             </button>
 
             {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
-                  currentPage === page ? "bg-purple-600 text-white" : "border border-gray-300 hover:bg-gray-50"
+                className={`w-8 h-8 rounded-lg text-[13px] font-medium transition-colors ${
+                  currentPage === page
+                    ? "bg-[#8570FF] text-white"
+                    : "border border-gray-300 hover:bg-gray-50 text-[#555555]"
                 }`}
               >
                 {page}
@@ -430,11 +322,13 @@ function UsersPage() {
 
             {totalPages > 5 && (
               <>
-                <span className="text-gray-400">...</span>
+                <span className="text-[#555555]">...</span>
                 <button
                   onClick={() => setCurrentPage(totalPages)}
-                  className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
-                    currentPage === totalPages ? "bg-purple-600 text-white" : "border border-gray-300 hover:bg-gray-50"
+                  className={`w-8 h-8 rounded-lg text-[13px] font-medium transition-colors ${
+                    currentPage === totalPages
+                      ? "bg-[#8570FF] text-white"
+                      : "border border-gray-300 hover:bg-gray-50 text-[#555555]"
                   }`}
                 >
                   {totalPages}
@@ -447,7 +341,7 @@ function UsersPage() {
               disabled={currentPage === totalPages || totalPages === 0}
               className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-4 h-4 text-[#555555]" />
             </button>
           </div>
         </div>
@@ -467,8 +361,10 @@ function UsersPage() {
         onClose={() => {
           setEditModalOpen(false)
           setSelectedUser(null)
+          setSelectedUserId(null)
         }}
         user={selectedUser}
+        loading={editUserLoading}
         onSave={handleUpdateUser}
         roles={roles}
         responsibilities={responsibilities}
