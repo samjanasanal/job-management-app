@@ -48,12 +48,12 @@ function Sidebar({ isOpen, onClose }) {
 
         {/* Logo */}
         <div className="p-6 pb-4">
-          <h1 className="text-2xl font-bold italic">LOGO</h1>
+          <h1 className="text-3xl text-center">LOGO</h1>
         </div>
 
         {/* Main Menu */}
         <div className="px-4">
-          <p className="text-xs text-gray-400 uppercase tracking-wider mb-3 px-3">Main Menu</p>
+          <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-3 px-3">Main Menu</p>
           <nav className="flex flex-col gap-1">
             {menuItems.map((item) => (
               <NavLink
@@ -68,7 +68,7 @@ function Sidebar({ isOpen, onClose }) {
                 }
               >
                 <item.icon className="w-5 h-5" />
-                <span className="text-sm font-medium">{item.label}</span>
+                <span className="text-[13px] font-medium">{item.label}</span>
               </NavLink>
             ))}
           </nav>
@@ -76,7 +76,7 @@ function Sidebar({ isOpen, onClose }) {
 
         {/* Settings */}
         <div className="px-4 mt-6">
-          <p className="text-xs text-gray-400 uppercase tracking-wider mb-3 px-3">Settings</p>
+          <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-3 px-3">Settings</p>
           <nav className="flex flex-col gap-1">
             {settingsItems.map((item) => (
               <NavLink
@@ -90,7 +90,7 @@ function Sidebar({ isOpen, onClose }) {
                 }
               >
                 <item.icon className="w-5 h-5" />
-                <span className="text-sm font-medium">{item.label}</span>
+                <span className="text-[13px] font-medium">{item.label}</span>
               </NavLink>
             ))}
           </nav>
@@ -103,7 +103,7 @@ function Sidebar({ isOpen, onClose }) {
             className="flex items-center gap-3 px-3 py-2.5 text-gray-300 hover:bg-white/10 rounded-lg transition-colors w-full"
           >
             <LogOut className="w-5 h-5" />
-            <span className="text-sm font-medium">Logout</span>
+            <span className="text-[13px] font-medium">Logout</span>
           </button>
         </div>
       </aside>

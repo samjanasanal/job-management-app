@@ -55,7 +55,7 @@ function LoginForm() {
 
   return (
     <div className="w-full backdrop-blur-xl bg-white/10 border border-white/20 rounded-xl p-6 md:p-8 shadow-2xl">
-      <h2 className="text-white text-2xl font-semibold mb-1">Sign in</h2>
+      <h2 className="text-white text-2xl mb-1">Sign in</h2>
       <p className="text-gray-400 text-sm mb-6">Log in to manage your account</p>
 
       <Formik initialValues={initialValues} validationSchema={loginValidationSchema} onSubmit={handleSubmit}>

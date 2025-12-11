@@ -1,16 +1,41 @@
-# React + Vite
+# Jobs Management Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A user management system built with React for managing users, roles, and teams.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **User CRUD operations**
+- **Role and responsibility management**
+- **Team organization**
+- **User status management**
+- **Profile image upload**
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend Framework**: React 19
+- **Build Tool**: Vite 7
+- **Styling**: Tailwind CSS v4
+- **Routing**: React Router v7
+- **Icons**: Lucide React
+- **Form Management**: Formik with Yup validation
+- **Font**: Poppins (Google Fonts)
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Clone the repository
+2. Install dependencies:
+\`\`\`bash
+npm install
+\`\`\`
+
+3. Start the development server:
+\`\`\`bash
+npm run dev
+\`\`\`
+
+The application will open in your browser at `http://localhost:5173`
+
+## Credentials
+
+- **Email**: reactdev@gmail.com
+- **Password**: 12345678

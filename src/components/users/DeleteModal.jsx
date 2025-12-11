@@ -14,22 +14,20 @@ function DeleteModal({ isOpen, onClose, onConfirm, loading = false }) {
           </div>
         </div>
 
-        {/* Message */}
-        <h3 className="text-lg font-semibold text-gray-800 mb-6">Are you sure want to delete?</h3>
+        <h3 className="text-base font-semibold text-[#555555] mb-6">Are you sure want to delete?</h3>
 
-        {/* Buttons */}
         <div className="flex gap-4">
           <button
             onClick={onClose}
             disabled={loading}
-            className="flex-1 px-4 py-2.5 border-2 border-blue-500 text-blue-500 font-medium rounded-full hover:bg-blue-50 transition-colors disabled:opacity-50"
+            className="flex-1 px-4 py-2 text-[14px] border-2 border-[#8570FF] text-[#8570FF] font-medium rounded-full hover:bg-[#8570FF]/10 transition-colors disabled:opacity-50"
           >
             No, Cancel
           </button>
           <button
             onClick={onConfirm}
             disabled={loading}
-            className="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white font-medium rounded-full transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 px-4 py-2 text-[14px] bg-red-500 hover:bg-red-600 text-white font-medium rounded-full transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? (
               <>

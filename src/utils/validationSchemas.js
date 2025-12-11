@@ -18,5 +18,5 @@ export const userValidationSchema = Yup.object().shape({
   title: Yup.string().nullable(),
   initials: Yup.string().max(5, "Initials must be at most 5 characters").nullable(),
   role: Yup.string().required("Role is required"),
-  responsibilities: Yup.array().min(1, "At least one responsibility is required"),
+  responsibilities: Yup.array().min(1, "At least one designation is required"),
 })

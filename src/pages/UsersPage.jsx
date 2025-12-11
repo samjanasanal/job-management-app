@@ -64,20 +64,16 @@ function UsersPage() {
         userAPI.getResponsibilities(),
       ])
 
-      // Parse roles - API returns { "role_name": "role_id", ... }
       if (rolesResponse.status && rolesResponse.data) {
         const rolesData = rolesResponse.data
         const allRoles = []
 
-        // Convert object { "Admin": "id1", "Demo Role": "id2" } to array [{ id, title }]
         Object.entries(rolesData).forEach(([title, id]) => {
-          // Skip if it's a nested object like 'other_roles'
           if (typeof id === "string") {
             allRoles.push({ id, title })
           }
         })
 
-        // Also handle other_roles array if present
         if (rolesData.other_roles && Array.isArray(rolesData.other_roles)) {
           allRoles.push(...rolesData.other_roles)
         }
@@ -85,11 +81,9 @@ function UsersPage() {
         setRoles(allRoles)
       }
 
-      // Parse responsibilities - check response format
       if (responsibilitiesResponse.status && responsibilitiesResponse.data) {
         const respData = responsibilitiesResponse.data
 
-        // If data is object like { "Designer": "id1", ... }, convert to array
         if (typeof respData === "object" && !Array.isArray(respData)) {
           const respArray = Object.entries(respData).map(([title, id]) => ({
             id,
@@ -104,7 +98,6 @@ function UsersPage() {
       }
     } catch (error) {
       console.log("Failed to fetch dropdown data:", error)
-      // Don't set defaults - keep empty arrays
       setRoles([])
       setResponsibilities([])
     }
@@ -241,15 +234,13 @@ function UsersPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#8570FF]" />
       </div>
     )
   }
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Jobs Management</h1>
-
       {/* Filters and Add Button */}
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="flex flex-col sm:flex-row gap-4 flex-1">
@@ -263,7 +254,7 @@ function UsersPage() {
                 setSearchQuery(e.target.value)
                 setCurrentPage(1)
               }}
-              className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 bg-white"
+              className="w-full pl-10 pr-4 py-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:border-[#8570FF] bg-white text-[#555555]"
             />
           </div>
 
@@ -273,7 +264,7 @@ function UsersPage() {
               setStatusFilter(e.target.value)
               setCurrentPage(1)
             }}
-            className="px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 bg-white min-w-[150px]"
+            className="px-4 py-2 text-[14px] border border-gray-300 rounded-lg focus:outline-none focus:border-[#8570FF] bg-white min-w-[150px] text-[#555555]"
           >
             <option value="">Select Status</option>
             <option value="active">Active</option>
@@ -283,9 +274,9 @@ function UsersPage() {
 
         <button
           onClick={() => setAddModalOpen(true)}
-          className="flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap"
+          className="flex items-center text-[14px] font-medium justify-center gap-2 bg-[#8570FF] hover:bg-[#8570FF]/90 text-white px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="w-5 h-5 flex-shrink-0" />
           <span>Add New User</span>
         </button>
       </div>
@@ -302,7 +293,7 @@ function UsersPage() {
 
         {/* Pagination */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-gray-100">
-          <p className="text-sm text-gray-500">
+          <p className="text-[13px] text-[#555555]">
             showing {filteredUsers.length > 0 ? startIndex : 0} to {endIndex} of {filteredUsers.length} results
           </p>
 
@@ -312,15 +303,17 @@ function UsersPage() {
               disabled={currentPage === 1}
               className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-4 h-4 text-[#555555]" />
             </button>
 
             {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
-                  currentPage === page ? "bg-purple-600 text-white" : "border border-gray-300 hover:bg-gray-50"
+                className={`w-8 h-8 rounded-lg text-[13px] font-medium transition-colors ${
+                  currentPage === page
+                    ? "bg-[#8570FF] text-white"
+                    : "border border-gray-300 hover:bg-gray-50 text-[#555555]"
                 }`}
               >
                 {page}
@@ -329,11 +322,13 @@ function UsersPage() {
 
             {totalPages > 5 && (
               <>
-                <span className="text-gray-400">...</span>
+                <span className="text-[#555555]">...</span>
                 <button
                   onClick={() => setCurrentPage(totalPages)}
-                  className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
-                    currentPage === totalPages ? "bg-purple-600 text-white" : "border border-gray-300 hover:bg-gray-50"
+                  className={`w-8 h-8 rounded-lg text-[13px] font-medium transition-colors ${
+                    currentPage === totalPages
+                      ? "bg-[#8570FF] text-white"
+                      : "border border-gray-300 hover:bg-gray-50 text-[#555555]"
                   }`}
                 >
                   {totalPages}
@@ -346,7 +341,7 @@ function UsersPage() {
               disabled={currentPage === totalPages || totalPages === 0}
               className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-4 h-4 text-[#555555]" />
             </button>
           </div>
         </div>

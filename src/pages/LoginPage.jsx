@@ -12,7 +12,7 @@ function LoginPage() {
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center gap-8 px-4 w-full max-w-md">
         {/* Logo */}
-        <h1 className="text-white text-4xl md:text-5xl font-bold italic tracking-wider">LOGO</h1>
+        <h1 className="text-white text-4xl md:text-5xl tracking-wider">LOGO</h1>
 
         {/* Login Form */}
         <LoginForm />
